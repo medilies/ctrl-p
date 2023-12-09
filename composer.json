@@ -1,0 +1,46 @@
+{
+    "name": "medilies/ctrl-p",
+    "description": "Delegate HTML to PDF conversion to the browser",
+    "type": "library",
+    "homepage": "https://github.com/medilies/ctrl-p",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "medilies",
+            "email": "medilies.contact@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "row-bloom/row-bloom": "dev-main"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "pestphp/pest": "^2.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "symfony/var-dumper": "^6.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Medilies\\CtrlP\\": "src/"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
