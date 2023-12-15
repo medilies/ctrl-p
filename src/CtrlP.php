@@ -2,8 +2,6 @@
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Printing
- * @see https://www.w3.org/TR/css-page-3
- * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@page
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/page
  * @see https://www.w3.org/TR/1998/REC-CSS2-19980512/page.html
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/print
@@ -100,22 +98,6 @@ class CtrlP
 
         return '';
     }
-
-    private function compileCss(): string
-    {
-        return '';
-    }
-
-    // ! ->showBrowserHeaderAndFooter()
-    // ! ->headerHtml($someHtml)
-    // ! ->footerHtml($someHtml)
-    // ! ->hideHeader()
-    // ! ->hideFooter()
-    // ! ->showBackground()
-    // ! ->transparentBackground()
-    // ! ->scale(0.5)
-    // ! ->pages('1-5, 8, 11-13')
-    // ! ->initialPageNumber(8)
 
     // ? Changing the value of a dropdown
     // ? Clicking on the page
