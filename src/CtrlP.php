@@ -77,7 +77,7 @@ class CtrlP
 
     public function paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
     {
-        $this->size = PageSizeResolver::resolve($size, $width, $height);
+        $this->size = PageSizeResolver::resolve(null, $size, $width, $height);
 
         return $this;
     }
