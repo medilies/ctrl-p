@@ -12,23 +12,11 @@ namespace Medilies\CtrlP;
 use RowBloom\RowBloom\Renderers\Sizing\BoxArea;
 use RowBloom\RowBloom\Renderers\Sizing\BoxSize;
 use RowBloom\RowBloom\Renderers\Sizing\Length;
-use RowBloom\RowBloom\Renderers\Sizing\PageSizeResolver;
 use RowBloom\RowBloom\Renderers\Sizing\PaperFormat;
 
 class CtrlP
 {
-    // https://github.dev/spatie/browsershot
-    // https://codepen.io/medilies/pen/VwgRyGb
-    // https://spatie.be/docs/browsershot/v2/introduction
-    // https://stackoverflow.com/questions/3338642/updating-address-bar-with-new-url-without-hash-or-reloading-the-page
-
-    protected ?BoxArea $margin = null;
-
-    protected ?PaperFormat $format = null;
-
-    protected ?BoxSize $size = null;
-
-    protected bool $landscape = false;
+    protected AtPage $atPage;
 
     protected string $html;
 
@@ -42,6 +30,7 @@ class CtrlP
 
     final public function __construct()
     {
+        $this->atPage = new AtPage;
     }
 
     public function setHtml(string $html): static
@@ -54,80 +43,44 @@ class CtrlP
 
     public function landscape(bool $set = true): static
     {
-        $this->landscape = $set;
+        $this->atPage->landscape($set);
 
         return $this;
     }
 
     public function portrait(bool $set = true): static
     {
-        $this->landscape = ! $set;
+        $this->atPage->portrait($set);
 
         return $this;
     }
 
     public function format(PaperFormat|string $format): static
     {
-        $this->format = $format instanceof PaperFormat ?
-            $format :
-            PaperFormat::from($format);
+        $this->atPage->format($format);
 
         return $this;
     }
 
     public function paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
     {
-        $this->size = PageSizeResolver::resolve(null, $size, $width, $height);
+        $this->atPage->paperSize($size, $width, $height);
 
         return $this;
     }
 
-    // TODO: ->margins($top, $right, $bottom, $left)
     public function margins(BoxArea|array|string $margin): static
     {
-        $this->margin = $margin instanceof BoxArea ?
-            $margin :
-            BoxArea::new($margin);
+        $this->atPage->margins($margin);
 
         return $this;
     }
 
     public function get(): string
     {
-        $css = $this->compilePageCss();
+        $css = $this->atPage->toString();
 
         return '';
-    }
-
-    /**
-     * @see https://www.w3.org/TR/css-page-3/#syntax-page-selector
-     * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@page
-     */
-    public function compilePageCss(): string
-    {
-        // TODO: <page-selector> = [ <ident-token>? <pseudo-page>* ]!
-        // <pseudo-page> = ':' [ left | right | first | blank ]
-        $pageSelectorList = '';
-
-        $resolvedSize = PageSizeResolver::resolve(
-            $this->format,
-            $this->size,
-            landscape: $this->landscape,
-        );
-
-        $size = "size: {$resolvedSize->width} {$resolvedSize->height}; ";
-
-        $margin = '';
-        if (! is_null($this->margin)) {
-            $margin .= "margin-top: {$this->margin->top}; ";
-            $margin .= "margin-right: {$this->margin->right}; ";
-            $margin .= "margin-bottom: {$this->margin->bottom}; ";
-            $margin .= "margin-left: {$this->margin->left}; ";
-        }
-
-        $declarationRuleList = $size.$margin;
-
-        return '@page '.$pageSelectorList.'{ '.$declarationRuleList.'}';
     }
 
     // ? Changing the value of a dropdown
