@@ -12,7 +12,9 @@
 namespace Medilies\CtrlP;
 
 use RowBloom\RowBloom\Renderers\Sizing\BoxArea;
+use RowBloom\RowBloom\Renderers\Sizing\BoxSize;
 use RowBloom\RowBloom\Renderers\Sizing\Length;
+use RowBloom\RowBloom\Renderers\Sizing\PageSizeResolver;
 use RowBloom\RowBloom\Renderers\Sizing\PaperFormat;
 
 class CtrlP
@@ -26,9 +28,7 @@ class CtrlP
 
     protected ?PaperFormat $format = null;
 
-    protected ?Length $width = null;
-
-    protected ?Length $height = null;
+    protected ?BoxSize $size = null;
 
     protected bool $landscape = false;
 
@@ -77,20 +77,9 @@ class CtrlP
         return $this;
     }
 
-    public function width(Length|string $width): static
+    public function paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
     {
-        $this->width = $width instanceof Length ?
-            $width :
-            Length::fromDimension($width);
-
-        return $this;
-    }
-
-    public function height(Length|string $height): static
-    {
-        $this->height = $height instanceof Length ?
-            $height :
-            Length::fromDimension($height);
+        $this->size = PageSizeResolver::resolve($size, $width, $height);
 
         return $this;
     }
