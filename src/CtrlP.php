@@ -94,9 +94,40 @@ class CtrlP
 
     public function get(): string
     {
-        $css = $this->compileCss();
+        $css = $this->compilePageCss();
 
         return '';
+    }
+
+    /**
+     * @see https://www.w3.org/TR/css-page-3/#syntax-page-selector
+     * @see https://developer.mozilla.org/en-US/docs/Web/CSS/@page
+     */
+    private function compilePageCss(): string
+    {
+        // TODO: <page-selector> = [ <ident-token>? <pseudo-page>* ]!
+        // <pseudo-page> = ':' [ left | right | first | blank ]
+        $pageSelectorList = '';
+
+        $resolvedSize = PageSizeResolver::resolve(
+            $this->format,
+            $this->size,
+            landscape: $this->landscape,
+        );
+
+        $size = "size: {$resolvedSize->width} {$resolvedSize->height};";
+
+        $margin = '';
+        if (! is_null($this->margin)) {
+            $margin .= "margin-top: {$this->margin->top};";
+            $margin .= "margin-right: {$this->margin->right};";
+            $margin .= "margin-bottom: {$this->margin->bottom};";
+            $margin .= "margin-left: {$this->margin->left};";
+        }
+
+        $declarationRuleList = $size.$margin;
+
+        return '@page '.$pageSelectorList.'{ '.$declarationRuleList.' }';
     }
 
     // ? Changing the value of a dropdown
