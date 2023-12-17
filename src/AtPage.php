@@ -19,6 +19,8 @@ class AtPage implements Stringable
 
     public bool $landscape = false;
 
+    public string $pageSelectorList = '';
+
     public static function new(): static
     {
         return new static;
@@ -68,6 +70,19 @@ class AtPage implements Stringable
         return $this;
     }
 
+    public function pageSelectorList(string $pageSelectorList): static
+    {
+        // Comma separated list
+        // Empty by default
+        // * A selector is made of either a <page-selector/ident-token> or a <pseudo-page>, followed by zero or more additional <pseudo-page>.
+        // * No whitespace is allowed between components of a selector.
+
+        $pageSelectorList = ''; // TODO
+        $this->pageSelectorList = $pageSelectorList;
+
+        return $this;
+    }
+
     public function get(): string
     {
         $css = $this->compilePageCss();
@@ -91,9 +106,11 @@ class AtPage implements Stringable
      */
     protected function compilePageCss(): string
     {
-        // TODO: <page-selector> = [ <ident-token>? <pseudo-page>* ]!
+        // @page <page-selector-list>? { <declaration-rule-list> }
+        // <page-selector-list> = <page-selector>#
+        // <page-selector> = [ <ident-token>? <pseudo-page>* ]!
         // <pseudo-page> = ':' [ left | right | first | blank ]
-        $pageSelectorList = '';
+        // examples: https://www.w3.org/TR/css-page-3/#example-691ff5b9
 
         $resolvedSize = PageSizeResolver::resolve(
             $this->format,
@@ -113,6 +130,6 @@ class AtPage implements Stringable
 
         $declarationRuleList = $size.$margin;
 
-        return '@page '.$pageSelectorList.'{ '.$declarationRuleList.'}';
+        return '@page '.$this->pageSelectorList.'{ '.$declarationRuleList.'}';
     }
 }
