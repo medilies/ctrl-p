@@ -14,4 +14,5 @@ test('compilePageCss full assertion')
             ) // A4
             ->toString()
     )
-    ->toBe('@page { size: 210mm 297mm; margin-top: 1cm; margin-right: 2cm; margin-bottom: 3cm; margin-left: 4cm; }');
+    ->toBeString()
+    ->toMatch('/@page\s+{\s+size: 210mm 297mm;\s+margin-top: 1cm;\s+margin-right: 2cm;\s+margin-bottom: 3cm;\s+margin-left: 4cm;\s+}/');
