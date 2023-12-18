@@ -9,14 +9,15 @@
 
 namespace Medilies\CtrlP;
 
-use RowBloom\RowBloom\Renderers\Sizing\BoxArea;
-use RowBloom\RowBloom\Renderers\Sizing\BoxSize;
-use RowBloom\RowBloom\Renderers\Sizing\Length;
-use RowBloom\RowBloom\Renderers\Sizing\PaperFormat;
+use Exception;
 
 class CtrlP
 {
-    protected AtPage $atPage;
+    /** @var array<string, AtPage> */
+    protected array $atPageRules = [];
+
+    /** @var list */
+    protected array $atPageRuleLabelsOrderedList = [];
 
     protected string $html;
 
@@ -30,7 +31,6 @@ class CtrlP
 
     final public function __construct()
     {
-        $this->atPage = new AtPage;
     }
 
     public function setHtml(string $html): static
@@ -41,46 +41,36 @@ class CtrlP
         return $this;
     }
 
-    public function landscape(bool $set = true): static
+    public function atPageRule(string $label, callable|AtPage $setter): static
     {
-        $this->atPage->landscape($set);
+        if (! array_key_exists($label, $this->atPageRules)) {
+            $this->atPageRuleLabelsOrderedList[] = $label;
+        }
 
-        return $this;
-    }
+        if ($setter instanceof AtPage) {
+            $this->atPageRules[$label] = $setter;
 
-    public function portrait(bool $set = true): static
-    {
-        $this->atPage->portrait($set);
+            return $this;
+        }
 
-        return $this;
-    }
+        $this->atPageRules[$label] ??= new AtPage;
 
-    public function format(PaperFormat|string $format): static
-    {
-        $this->atPage->format($format);
-
-        return $this;
-    }
-
-    public function paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
-    {
-        $this->atPage->paperSize($size, $width, $height);
-
-        return $this;
-    }
-
-    public function margins(BoxArea|array|string $margin): static
-    {
-        $this->atPage->margins($margin);
+        $setter($this->atPageRules[$label]);
 
         return $this;
     }
 
     public function get(): string
     {
-        $css = $this->atPage->toString();
+        $css = '';
 
-        return '';
+        foreach ($this->atPageRuleLabelsOrderedList as $label) {
+            $css .= $this->atPageRules[$label]->toString();
+        }
+
+        $html = $css;
+
+        return $html;
     }
 
     // ? Changing the value of a dropdown
