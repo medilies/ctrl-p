@@ -2,20 +2,17 @@
 
 // * php -S 0.0.0.0:8080 .\test.php
 
-use Medilies\CtrlP\AtPage;
 use Medilies\CtrlP\CtrlP;
 use RowBloom\RowBloom\Renderers\Sizing\Length;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$page = CtrlP::html('')
-    ->atPageRule('default', fn (AtPage $atPage) => $atPage->margins('2in')
+$page = CtrlP::html('')->margins('2in')
         ->paperSize(
             null,
             Length::fromDimension('130mm'),
             Length::fromDimension('130mm')
         )
-    )
     ->get();
 ?>
 

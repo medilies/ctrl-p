@@ -11,10 +11,18 @@ namespace Medilies\CtrlP;
 
 use Exception;
 
+/**
+ * @method landscape(bool $set = true): static
+ * @method portrait(bool $set = true): static
+ * @method format(PaperFormat|string $format): static
+ * @method paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
+ * @method margins(BoxArea|array|string $margin): static
+ * @method pageSelectorList(string $pageSelectorList): static
+ */
 class CtrlP
 {
     /** @var array<string, AtPage> */
-    protected array $atPageRules = [];
+    protected array $atPageRules;
 
     /** @var list */
     protected array $atPageRuleLabelsOrderedList = [];
@@ -31,6 +39,11 @@ class CtrlP
 
     final public function __construct()
     {
+        $this->atPageRules = [
+            '' => new AtPage,
+        ];
+
+        $this->atPageRuleLabelsOrderedList[] = '';
     }
 
     public function setHtml(string $html): static
@@ -40,6 +53,10 @@ class CtrlP
 
         return $this;
     }
+
+    // ========================================================================
+    // @page
+    // ========================================================================
 
     public function atPageRule(string $label, callable|AtPage $setter): static
     {
@@ -59,6 +76,30 @@ class CtrlP
 
         return $this;
     }
+
+    public function __call($name, $arguments)
+    {
+        $atPageProxyMethods = [
+            'landscape',
+            'portrait',
+            'format',
+            'paperSize',
+            'margins',
+            'pageSelectorList',
+        ];
+
+        if (! in_array($name, $atPageProxyMethods, true)) {
+            return;
+        }
+
+        $this->atPageRules['']->$name(...$arguments);
+
+        return $this;
+    }
+
+    // ========================================================================
+    //
+    // ========================================================================
 
     public function get(): string
     {
