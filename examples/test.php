@@ -25,13 +25,13 @@ $html = CtrlP::html('
     @ctrl_p_script
 </body>
 </html>
-        ')
-        ->margins('2in')
-        ->paperSize(
-            null,
-            Length::fromDimension('130mm'),
-            Length::fromDimension('130mm')
-        )
+    ')
+    ->margins('2in')
+    ->paperSize(
+        null,
+        Length::fromDimension('130mm'),
+        Length::fromDimension('130mm')
+    )
     ->get();
 ?>
 

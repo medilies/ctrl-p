@@ -37,11 +37,11 @@ class CtrlP
     // TODO: ::url('https://example.com')
     // TODO: ::php()
 
-    final public function __construct()
-    {
-        $this->atPageRules = [
-            '' => new AtPage,
-        ];
+    final public function __construct(
+        protected jsScript $jsScript = new jsScript,
+        AtPage $defaultAtRule = new AtPage,
+    ) {
+        $this->atPageRules = ['' => $defaultAtRule];
 
         $this->atPageRuleLabelsOrderedList[] = '';
     }
@@ -109,33 +109,12 @@ class CtrlP
             $css .= $this->atPageRules[$label]->toString();
         }
 
-        $script = $this->jsScript();
+        $script = $this->jsScript->toString();
 
         $html = $this->html;
         $html = str_replace('@ctrl_p_css', "<style>{$css}</style>", $html);
         $html = str_replace('@ctrl_p_script', "<script>{$script}</script>", $html);
 
         return $html;
-    }
-
-    public function jsScript(): string
-    {
-        // TODO: options
-        // - Auto print?
-        // - Print button
-        // - Edit title
-        // - Edit url
-        // - Back to app button
-
-        // window.history.pushState("object or string", "ignored title", "/new-url");
-        // window.history.replaceState('data to be passed', 'Title of the page', '/test');
-        // window.print();
-        // document.title = "Title"
-
-        return '
-            window.history.pushState("object or string", "ignored title", "/new-url");
-            document.title = "Title";
-            window.print();
-        ';
     }
 }
