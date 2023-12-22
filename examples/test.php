@@ -7,7 +7,26 @@ use RowBloom\RowBloom\Renderers\Sizing\Length;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$page = CtrlP::html('')->margins('2in')
+$html = CtrlP::html('
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    @ctrl_p_css
+</head>
+<body>
+    <main class="bg-gray-300">
+        yoo
+    </main>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    @ctrl_p_script
+</body>
+</html>
+        ')
+        ->margins('2in')
         ->paperSize(
             null,
             Length::fromDimension('130mm'),
@@ -16,26 +35,4 @@ $page = CtrlP::html('')->margins('2in')
     ->get();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        <?= $page ?>
-    </style>
-</head>
-<body>
-    <main class="bg-gray-300">
-        yoo
-    </main>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        window.history.pushState("object or string", "ignored title", "/new-url");
-        document.title = "Title";
-        window.print();
-    </script>
-</body>
-</html>
+<?= $html ?>

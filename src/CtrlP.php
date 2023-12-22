@@ -109,16 +109,33 @@ class CtrlP
             $css .= $this->atPageRules[$label]->toString();
         }
 
-        $html = $css;
+        $script = $this->jsScript();
+
+        $html = $this->html;
+        $html = str_replace('@ctrl_p_css', "<style>{$css}</style>", $html);
+        $html = str_replace('@ctrl_p_script', "<script>{$script}</script>", $html);
 
         return $html;
     }
 
-    // ? Changing the value of a dropdown
-    // ? Clicking on the page
-
     public function jsScript(): string
     {
-        return file_get_contents(__DIR__.'/ctrl_p.js');
+        // TODO: options
+        // - Auto print?
+        // - Print button
+        // - Edit title
+        // - Edit url
+        // - Back to app button
+
+        // window.history.pushState("object or string", "ignored title", "/new-url");
+        // window.history.replaceState('data to be passed', 'Title of the page', '/test');
+        // window.print();
+        // document.title = "Title"
+
+        return '
+            window.history.pushState("object or string", "ignored title", "/new-url");
+            document.title = "Title";
+            window.print();
+        ';
     }
 }
