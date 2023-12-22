@@ -9,15 +9,16 @@
 
 namespace Medilies\CtrlP;
 
-use Exception;
-
 /**
- * @method landscape(bool $set = true): static
- * @method portrait(bool $set = true): static
- * @method format(PaperFormat|string $format): static
- * @method paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
- * @method margins(BoxArea|array|string $margin): static
- * @method pageSelectorList(string $pageSelectorList): static
+ * .
+ *
+ * Delegated to AtPage:
+ * @method static landscape(bool $set = true)
+ * @method static portrait(bool $set = true)
+ * @method static format(PaperFormat|string $format)
+ * @method static paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null)
+ * @method static margins(BoxArea|array|string $margin)
+ * @method static pageSelectorList(string $pageSelectorList)
  */
 class CtrlP
 {
@@ -54,6 +55,25 @@ class CtrlP
         return $this;
     }
 
+    /** @phpstan-ignore-next-line */
+    public function __call(string $name, $arguments)
+    {
+        $atPageProxyMethods = [
+            'landscape',
+            'portrait',
+            'format',
+            'paperSize',
+            'margins',
+            'pageSelectorList',
+        ];
+
+        if (in_array($name, $atPageProxyMethods, true)) {
+            $this->atPageRules['']->$name(...$arguments);
+
+            return $this;
+        }
+    }
+
     // ========================================================================
     // @page
     // ========================================================================
@@ -73,26 +93,6 @@ class CtrlP
         $this->atPageRules[$label] ??= new AtPage;
 
         $setter($this->atPageRules[$label]);
-
-        return $this;
-    }
-
-    public function __call($name, $arguments)
-    {
-        $atPageProxyMethods = [
-            'landscape',
-            'portrait',
-            'format',
-            'paperSize',
-            'margins',
-            'pageSelectorList',
-        ];
-
-        if (! in_array($name, $atPageProxyMethods, true)) {
-            return;
-        }
-
-        $this->atPageRules['']->$name(...$arguments);
 
         return $this;
     }
