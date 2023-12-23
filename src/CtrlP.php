@@ -9,10 +9,13 @@
 
 namespace Medilies\CtrlP;
 
+use Exception;
+
 /**
  * .
  *
  * Delegated to AtPage:
+ *
  * @method static landscape(bool $set = true)
  * @method static portrait(bool $set = true)
  * @method static format(PaperFormat|string $format)
@@ -23,10 +26,7 @@ namespace Medilies\CtrlP;
 class CtrlP
 {
     /** @var array<string, AtPage> */
-    protected array $atPageRules;
-
-    /** @var list */
-    protected array $atPageRuleLabelsOrderedList = [];
+    protected array $atPageRules = [];
 
     protected string $html;
 
@@ -38,13 +38,8 @@ class CtrlP
     // TODO: ::url('https://example.com')
     // TODO: ::php()
 
-    final public function __construct(
-        protected jsScript $jsScript = new jsScript,
-        AtPage $defaultAtRule = new AtPage,
-    ) {
-        $this->atPageRules = ['' => $defaultAtRule];
-
-        $this->atPageRuleLabelsOrderedList[] = '';
+    final public function __construct(protected jsScript $jsScript = new jsScript)
+    {
     }
 
     public function setHtml(string $html): static
@@ -68,6 +63,8 @@ class CtrlP
         ];
 
         if (in_array($name, $atPageProxyMethods, true)) {
+            $this->addAtPageRuleIfNotFound('', new AtPage);
+
             $this->atPageRules['']->$name(...$arguments);
 
             return $this;
@@ -78,19 +75,46 @@ class CtrlP
     // @page
     // ========================================================================
 
-    public function atPageRule(string $label, callable|AtPage $setter): static
+    protected function addAtPageRuleIfNotFound(string $label, AtPage $atPage): static
     {
-        if (! array_key_exists($label, $this->atPageRules)) {
-            $this->atPageRuleLabelsOrderedList[] = $label;
-        }
-
-        if ($setter instanceof AtPage) {
-            $this->atPageRules[$label] = $setter;
-
+        if (array_key_exists($label, $this->atPageRules)) {
             return $this;
         }
 
-        $this->atPageRules[$label] ??= new AtPage;
+        return $this->setAtPageRule($label, $atPage);
+    }
+
+    protected function setAtPageRule(string $label, AtPage $atPage): static
+    {
+        if (is_numeric($label)) {
+            throw new Exception('Label cannot be a numeric value');
+        }
+
+        $this->atPageRules[$label] = $atPage;
+
+        return $this;
+    }
+
+    public function removeAtPageRuleIfFound(string $label): static
+    {
+        if (array_key_exists($label, $this->atPageRules)) {
+            unset($this->atPageRules[$label]);
+        }
+
+        return $this;
+    }
+
+    public function atPageRule(string $label, callable|AtPage $setter): static
+    {
+        if($label === '') {
+            throw new Exception('Label cannot be empty');
+        }
+
+        if ($setter instanceof AtPage) {
+            return $this->setAtPageRule($label, $setter);
+        }
+
+        $this->addAtPageRuleIfNotFound($label, new AtPage);
 
         $setter($this->atPageRules[$label]);
 
@@ -105,8 +129,8 @@ class CtrlP
     {
         $css = '';
 
-        foreach ($this->atPageRuleLabelsOrderedList as $label) {
-            $css .= $this->atPageRules[$label]->toString();
+        foreach ($this->atPageRules as $atRule) {
+            $css .= $atRule->toString();
         }
 
         $script = $this->jsScript->toString();
