@@ -4,7 +4,7 @@ namespace Medilies\CtrlP;
 
 use Stringable;
 
-class jsScript implements Stringable
+class JsScript implements Stringable
 {
     protected bool $autoPrint = true;
 

@@ -47,7 +47,7 @@ class CtrlP
     // TODO: ::url('https://example.com')
     // TODO: ::php()
 
-    final public function __construct(protected jsScript $jsScript = new jsScript)
+    final public function __construct(protected JsScript $JsScript = new JsScript)
     {
     }
 
@@ -85,7 +85,7 @@ class CtrlP
             'pageSelectorList',
         ];
 
-        $jsScriptProxyMethods = [
+        $JsScriptProxyMethods = [
             'autoPrint',
             'title',
             'urlPath',
@@ -99,8 +99,8 @@ class CtrlP
             return $this;
         }
 
-        if (in_array($name, $jsScriptProxyMethods, true)) {
-            $this->jsScript->$name(...$arguments);
+        if (in_array($name, $JsScriptProxyMethods, true)) {
+            $this->JsScript->$name(...$arguments);
 
             return $this;
         }
@@ -236,7 +236,7 @@ class CtrlP
             $css .= $atRule->toString();
         }
 
-        $script = $this->jsScript->toString();
+        $script = $this->JsScript->toString();
 
         $html = $this->html;
 
