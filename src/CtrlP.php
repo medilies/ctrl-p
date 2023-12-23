@@ -157,8 +157,8 @@ class CtrlP
         $script = $this->jsScript->toString();
 
         $html = $this->html;
-        $html = str_replace('@ctrl_p_css', "<style>{$css}</style>", $html);
-        $html = str_replace('@ctrl_p_script', "<script>{$script}</script>", $html);
+
+        $html = str_replace('@CtrlP', "<style>{$css}</style>\n\t<script>{$script}</script>", $html);
 
         return $html;
     }

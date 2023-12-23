@@ -23,7 +23,7 @@ test('atPageRule() with callable')
                     null,
                     Length::fromDimension('210mm'),
                     Length::fromDimension('297mm')
-                ); // A4
+                );
         })->get()
     )
     ->toBeString()
@@ -37,7 +37,7 @@ test('atPageRule() with instanceof AtPage')
                     null,
                     Length::fromDimension('210mm'),
                     Length::fromDimension('297mm')
-                ) // A4
+                )
             )
             ->get()
     )

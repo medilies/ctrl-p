@@ -12,7 +12,6 @@ $html = CtrlP::html('
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    @ctrl_p_css
 </head>
 <body>
     <main class="bg-gray-300">
@@ -20,7 +19,7 @@ $html = CtrlP::html('
     </main>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    @ctrl_p_script
+    @CtrlP
 </body>
 </html>
     ')
