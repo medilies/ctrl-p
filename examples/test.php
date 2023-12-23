@@ -12,8 +12,6 @@ $html = CtrlP::html('
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     @ctrl_p_css
 </head>
 <body>
@@ -32,6 +30,9 @@ $html = CtrlP::html('
         Length::fromDimension('130mm'),
         Length::fromDimension('130mm')
     )
+    ->title('yoyo')
+    ->urlPath('/yoyo')
+    ->autoPrint(true)
     ->get();
 ?>
 

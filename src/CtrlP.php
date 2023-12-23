@@ -22,6 +22,11 @@ use Exception;
  * @method static paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null)
  * @method static margins(BoxArea|array|string $margin)
  * @method static pageSelectorList(string $pageSelectorList)
+ *
+ * Delegated to JsScript:
+ * @method static autoPrint(bool $autoPrint)
+ * @method static title(?string $title)
+ * @method static urlPath(?string $urlPath)
  */
 class CtrlP
 {
@@ -29,6 +34,10 @@ class CtrlP
     protected array $atPageRules = [];
 
     protected string $html;
+
+    protected ?string $backUrlPath = null;
+
+    protected bool $printButton = false;
 
     public static function html(string $html): static
     {
@@ -62,10 +71,22 @@ class CtrlP
             'pageSelectorList',
         ];
 
+        $jsScriptProxyMethods = [
+            'autoPrint',
+            'title',
+            'urlPath',
+        ];
+
         if (in_array($name, $atPageProxyMethods, true)) {
             $this->addAtPageRuleIfNotFound('', new AtPage);
 
             $this->atPageRules['']->$name(...$arguments);
+
+            return $this;
+        }
+
+        if (in_array($name, $jsScriptProxyMethods, true)) {
+            $this->jsScript->$name(...$arguments);
 
             return $this;
         }
@@ -106,7 +127,7 @@ class CtrlP
 
     public function atPageRule(string $label, callable|AtPage $setter): static
     {
-        if($label === '') {
+        if ($label === '') {
             throw new Exception('Label cannot be empty');
         }
 
