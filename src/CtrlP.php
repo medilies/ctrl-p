@@ -24,7 +24,7 @@ use Exception;
  * @method static pageSelectorList(string $pageSelectorList)
  *
  * Delegated to JsScript:
- * @method static autoPrint(bool $autoPrint)
+ * @method static autoPrint(bool $autoPrint = true)
  * @method static title(?string $title)
  * @method static urlPath(?string $urlPath)
  */
@@ -35,7 +35,7 @@ class CtrlP
 
     protected string $html;
 
-    protected ?string $backUrlPath = null;
+    protected ?string $backUrl = null;
 
     protected bool $printButton = false;
 
@@ -55,6 +55,20 @@ class CtrlP
     {
         // ? validate HTML
         $this->html = $html;
+
+        return $this;
+    }
+
+    public function backUrl(?string $backUrl): static
+    {
+        $this->backUrl = $backUrl;
+
+        return $this;
+    }
+
+    public function printButton(bool $printButton = true): static
+    {
+        $this->printButton = $printButton;
 
         return $this;
     }
@@ -146,6 +160,74 @@ class CtrlP
     //
     // ========================================================================
 
+    protected function printButtonComponent(): string
+    {
+        if (! $this->printButton) {
+            return '';
+        }
+
+        $id = 'ctrl-p-print-button';
+
+        return <<<EOT
+
+            <button onclick='window.print()' id='{$id}'>Print</button>
+            <style>
+            #{$id} {
+                display: block;
+            }
+            </style>
+        EOT;
+    }
+
+    protected function backUrlComponent(): string
+    {
+        if (is_null($this->backUrl)) {
+            return '';
+        }
+
+        $id = 'ctrl-p-back-url';
+
+        return <<<EOT
+
+            <a href='{$this->backUrl}' id='{$id}'>Back</a>
+            <style>
+                #{$id} {
+                    display: block;
+                }
+            </style>
+        EOT;
+    }
+
+    protected function controlComponents(): string
+    {
+        if (is_null($this->backUrl) && ! $this->printButton) {
+            return '';
+        }
+
+        $id = 'ctrl-p-control';
+        $backUrlComponent = $this->backUrlComponent();
+        $printButtonComponent = $this->printButtonComponent();
+
+        return <<<EOT
+
+        <div id='{$id}'>
+            {$printButtonComponent}
+            {$backUrlComponent}
+        </div>
+        <style>
+            #{$id} {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                z-index: 999999;
+            }
+            @media print { #{$id} { display: none; } }
+        </style>
+
+        EOT;
+    }
+
     public function get(): string
     {
         $css = '';
@@ -158,7 +240,11 @@ class CtrlP
 
         $html = $this->html;
 
-        $html = str_replace('@CtrlP', "<style>{$css}</style>\n\t<script>{$script}</script>", $html);
+        $html = str_replace(
+            '@CtrlP',
+            $this->controlComponents()."<style>\n{$css}</style>\n<script>\n{$script}</script>",
+            $html
+        );
 
         return $html;
     }

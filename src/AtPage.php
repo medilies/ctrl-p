@@ -124,6 +124,6 @@ class AtPage implements Stringable
 
         $declarationRuleList = $size.$margin;
 
-        return '@page '.$this->pageSelectorList.'{ '.$declarationRuleList.'}';
+        return '@page '.$this->pageSelectorList.'{ '.$declarationRuleList.'}'."\n";
     }
 }

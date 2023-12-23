@@ -31,7 +31,9 @@ $html = CtrlP::html('
     )
     ->title('yoyo')
     ->urlPath('/yoyo')
-    ->autoPrint(true)
+    ->autoPrint()
+    ->printButton()
+    ->backUrl('/')
     ->get();
 ?>
 

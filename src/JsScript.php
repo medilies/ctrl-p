@@ -21,7 +21,7 @@ class jsScript implements Stringable
     {
     }
 
-    public function autoPrint(bool $autoPrint): static
+    public function autoPrint(bool $autoPrint = true): static
     {
         $this->autoPrint = $autoPrint;
 
@@ -57,16 +57,16 @@ class jsScript implements Stringable
         $js = '';
 
         if ($this->title) {
-            $js .= "document.title = `{$this->title}`;";
+            $js .= "document.title = `{$this->title}`;\n";
         }
 
         if ($this->urlPath) {
-            $js .= "window.history.pushState('object or string', 'ignored title', `{$this->urlPath}`);";
+            $js .= "window.history.pushState('object or string', 'ignored title', `{$this->urlPath}`);\n";
             // ? window.history.replaceState or window.history.pushState
         }
 
         if ($this->autoPrint) {
-            $js .= 'window.print();';
+            $js .= "window.print();\n";
         }
 
         return $js;

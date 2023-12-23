@@ -5,7 +5,7 @@ use Medilies\CtrlP\CtrlP;
 use RowBloom\RowBloom\Renderers\Sizing\Length;
 
 test('proxy to AtPage')
-    ->expect(CtrlP::html('@ctrl_p_css')->margins('1cm 2cm 3cm 4cm')
+    ->expect(CtrlP::html('@CtrlP')->margins('1cm 2cm 3cm 4cm')
         ->paperSize(
             null,
             Length::fromDimension('210mm'),
@@ -17,7 +17,7 @@ test('proxy to AtPage')
 
 test('atPageRule() with callable')
     ->expect(
-        CtrlP::html('@ctrl_p_css')->atPageRule('x', function (AtPage $atPage) {
+        CtrlP::html('@CtrlP')->atPageRule('x', function (AtPage $atPage) {
             $atPage->margins('1cm 2cm 3cm 4cm')
                 ->paperSize(
                     null,
@@ -31,7 +31,7 @@ test('atPageRule() with callable')
 
 test('atPageRule() with instanceof AtPage')
     ->expect(
-        CtrlP::html('@ctrl_p_css')
+        CtrlP::html('@CtrlP')
             ->atPageRule('x', AtPage::new()->margins('1cm 2cm 3cm 4cm')
                 ->paperSize(
                     null,
