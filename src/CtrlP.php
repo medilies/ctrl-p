@@ -12,7 +12,9 @@ namespace Medilies\CtrlP;
 use Exception;
 
 /**
- * Delegated to AtPage or JsScript or ControlComponents:
+ * .
+ *
+ * Delegated to AtPage:
  *
  * @method static landscape(bool $set = true)
  * @method static portrait(bool $set = true)
@@ -20,11 +22,6 @@ use Exception;
  * @method static paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null)
  * @method static margins(BoxArea|array|string $margin)
  * @method static pageSelectorList(string $pageSelectorList)
- * @method static autoPrint(bool $autoPrint = true)
- * @method static title(?string $title)
- * @method static urlPath(?string $urlPath)
- * @method static backUrl(?string $backUrl)
- * @method static printButton(bool $printButton = true)
  */
 class CtrlP
 {
@@ -32,6 +29,16 @@ class CtrlP
     protected array $atPageRules = [];
 
     protected string $html;
+
+    protected bool $autoPrint = true;
+
+    protected ?string $title = null;
+
+    protected ?string $urlPath = null;
+
+    protected ?string $backUrl = null;
+
+    protected bool $printButton = false;
 
     public static function html(string $html): static
     {
@@ -41,16 +48,48 @@ class CtrlP
     // TODO: ::url('https://example.com')
     // TODO: ::php()
 
-    final public function __construct(
-        protected JsScript $JsScript = new JsScript,
-        protected ControlComponents $controlComponents = new ControlComponents
-    ) {
+    final public function __construct()
+    {
     }
 
     public function setHtml(string $html): static
     {
-        // ? validate HTML
         $this->html = $html;
+
+        return $this;
+    }
+
+    public function autoPrint(bool $autoPrint = true): static
+    {
+        $this->autoPrint = $autoPrint;
+
+        return $this;
+    }
+
+    public function title(?string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function urlPath(?string $urlPath): static
+    {
+        $this->urlPath = $urlPath;
+
+        return $this;
+    }
+
+    public function backUrl(?string $backUrl): static
+    {
+        $this->backUrl = $backUrl;
+
+        return $this;
+    }
+
+    public function printButton(bool $printButton = true): static
+    {
+        $this->printButton = $printButton;
 
         return $this;
     }
@@ -67,33 +106,10 @@ class CtrlP
             'pageSelectorList',
         ];
 
-        $JsScriptProxyMethods = [
-            'autoPrint',
-            'title',
-            'urlPath',
-        ];
-
-        $controlComponentsProxyMethods = [
-            'backUrl',
-            'printButton',
-        ];
-
         if (in_array($name, $atPageProxyMethods, true)) {
             $this->addAtPageRuleIfNotFound('', new AtPage);
 
             $this->atPageRules['']->$name(...$arguments);
-
-            return $this;
-        }
-
-        if (in_array($name, $JsScriptProxyMethods, true)) {
-            $this->JsScript->$name(...$arguments);
-
-            return $this;
-        }
-
-        if (in_array($name, $controlComponentsProxyMethods, true)) {
-            $this->controlComponents->$name(...$arguments);
 
             return $this;
         }
@@ -102,26 +118,6 @@ class CtrlP
     // ========================================================================
     // @page
     // ========================================================================
-
-    protected function addAtPageRuleIfNotFound(string $label, AtPage $atPage): static
-    {
-        if (array_key_exists($label, $this->atPageRules)) {
-            return $this;
-        }
-
-        return $this->setAtPageRule($label, $atPage);
-    }
-
-    protected function setAtPageRule(string $label, AtPage $atPage): static
-    {
-        if (is_numeric($label)) {
-            throw new Exception('Label cannot be a numeric value');
-        }
-
-        $this->atPageRules[$label] = $atPage;
-
-        return $this;
-    }
 
     public function removeAtPageRuleIfFound(string $label): static
     {
@@ -149,11 +145,132 @@ class CtrlP
         return $this;
     }
 
+    protected function addAtPageRuleIfNotFound(string $label, AtPage $atPage): static
+    {
+        if (array_key_exists($label, $this->atPageRules)) {
+            return $this;
+        }
+
+        return $this->setAtPageRule($label, $atPage);
+    }
+
+    protected function setAtPageRule(string $label, AtPage $atPage): static
+    {
+        if (is_numeric($label)) {
+            throw new Exception('Label cannot be a numeric value');
+        }
+
+        $this->atPageRules[$label] = $atPage;
+
+        return $this;
+    }
+
     // ========================================================================
-    //
+    // ControlComponents
+    // ========================================================================
+
+    protected function printButtonComponent(): string
+    {
+        if (! $this->printButton) {
+            return '';
+        }
+
+        $id = 'ctrl-p-print-button';
+
+        return <<<EOT
+
+            <button onclick='window.print()' id='{$id}'>Print</button>
+            <style>
+            #{$id} {
+                display: block;
+            }
+            </style>
+        EOT;
+    }
+
+    protected function backUrlComponent(): string
+    {
+        if (is_null($this->backUrl)) {
+            return '';
+        }
+
+        $id = 'ctrl-p-back-url';
+
+        return <<<EOT
+
+            <a href='{$this->backUrl}' id='{$id}'>Back</a>
+            <style>
+                #{$id} {
+                    display: block;
+                }
+            </style>
+        EOT;
+    }
+
+    protected function compileControlComponents(): string
+    {
+        if (is_null($this->backUrl) && ! $this->printButton) {
+            return '';
+        }
+
+        $id = 'ctrl-p-control';
+        $backUrlComponent = $this->backUrlComponent();
+        $printButtonComponent = $this->printButtonComponent();
+
+        return <<<EOT
+
+        <div id='{$id}'>
+            {$printButtonComponent}
+            {$backUrlComponent}
+        </div>
+        <style>
+            #{$id} {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                right: 0;
+                z-index: 999999;
+            }
+            @media print { #{$id} { display: none; } }
+        </style>
+
+        EOT;
+    }
+
+    // ========================================================================
+    // ControlComponents
+    // ========================================================================
+
+    protected function compileJs(): string
+    {
+        $js = '';
+
+        if ($this->title) {
+            $js .= "document.title = `{$this->title}`;\n";
+        }
+
+        if ($this->urlPath) {
+            $js .= "window.history.pushState('object or string', 'ignored title', `{$this->urlPath}`);\n";
+            // ? window.history.replaceState or window.history.pushState
+        }
+
+        if ($this->autoPrint) {
+            $js .= "window.print();\n";
+        }
+
+        return $js;
+    }
+
+    // ========================================================================
+    // Enders
     // ========================================================================
 
     public function get(): string
+    {
+        return $this->toString();
+    }
+
+    public function toString(): string
     {
         $css = '';
 
@@ -161,13 +278,13 @@ class CtrlP
             $css .= $atRule->toString();
         }
 
-        $script = $this->JsScript->toString();
+        $script = $this->compileJs();
 
         $html = $this->html;
 
         $html = str_replace(
             '@CtrlP',
-            $this->controlComponents."<style>\n{$css}</style>\n<script>\n{$script}</script>",
+            $this->compileControlComponents()."<style>\n{$css}</style>\n<script>\n{$script}</script>",
             $html
         );
 
