@@ -12,9 +12,7 @@ namespace Medilies\CtrlP;
 use Exception;
 
 /**
- * .
- *
- * Delegated to AtPage:
+ * Delegated to AtPage or JsScript or ControlComponents:
  *
  * @method static landscape(bool $set = true)
  * @method static portrait(bool $set = true)
@@ -22,11 +20,11 @@ use Exception;
  * @method static paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null)
  * @method static margins(BoxArea|array|string $margin)
  * @method static pageSelectorList(string $pageSelectorList)
- *
- * Delegated to JsScript:
  * @method static autoPrint(bool $autoPrint = true)
  * @method static title(?string $title)
  * @method static urlPath(?string $urlPath)
+ * @method static backUrl(?string $backUrl)
+ * @method static printButton(bool $printButton = true)
  */
 class CtrlP
 {
@@ -34,10 +32,6 @@ class CtrlP
     protected array $atPageRules = [];
 
     protected string $html;
-
-    protected ?string $backUrl = null;
-
-    protected bool $printButton = false;
 
     public static function html(string $html): static
     {
@@ -47,28 +41,16 @@ class CtrlP
     // TODO: ::url('https://example.com')
     // TODO: ::php()
 
-    final public function __construct(protected JsScript $JsScript = new JsScript)
-    {
+    final public function __construct(
+        protected JsScript $JsScript = new JsScript,
+        protected ControlComponents $controlComponents = new ControlComponents
+    ) {
     }
 
     public function setHtml(string $html): static
     {
         // ? validate HTML
         $this->html = $html;
-
-        return $this;
-    }
-
-    public function backUrl(?string $backUrl): static
-    {
-        $this->backUrl = $backUrl;
-
-        return $this;
-    }
-
-    public function printButton(bool $printButton = true): static
-    {
-        $this->printButton = $printButton;
 
         return $this;
     }
@@ -91,6 +73,11 @@ class CtrlP
             'urlPath',
         ];
 
+        $controlComponentsProxyMethods = [
+            'backUrl',
+            'printButton',
+        ];
+
         if (in_array($name, $atPageProxyMethods, true)) {
             $this->addAtPageRuleIfNotFound('', new AtPage);
 
@@ -101,6 +88,12 @@ class CtrlP
 
         if (in_array($name, $JsScriptProxyMethods, true)) {
             $this->JsScript->$name(...$arguments);
+
+            return $this;
+        }
+
+        if (in_array($name, $controlComponentsProxyMethods, true)) {
+            $this->controlComponents->$name(...$arguments);
 
             return $this;
         }
@@ -160,74 +153,6 @@ class CtrlP
     //
     // ========================================================================
 
-    protected function printButtonComponent(): string
-    {
-        if (! $this->printButton) {
-            return '';
-        }
-
-        $id = 'ctrl-p-print-button';
-
-        return <<<EOT
-
-            <button onclick='window.print()' id='{$id}'>Print</button>
-            <style>
-            #{$id} {
-                display: block;
-            }
-            </style>
-        EOT;
-    }
-
-    protected function backUrlComponent(): string
-    {
-        if (is_null($this->backUrl)) {
-            return '';
-        }
-
-        $id = 'ctrl-p-back-url';
-
-        return <<<EOT
-
-            <a href='{$this->backUrl}' id='{$id}'>Back</a>
-            <style>
-                #{$id} {
-                    display: block;
-                }
-            </style>
-        EOT;
-    }
-
-    protected function controlComponents(): string
-    {
-        if (is_null($this->backUrl) && ! $this->printButton) {
-            return '';
-        }
-
-        $id = 'ctrl-p-control';
-        $backUrlComponent = $this->backUrlComponent();
-        $printButtonComponent = $this->printButtonComponent();
-
-        return <<<EOT
-
-        <div id='{$id}'>
-            {$printButtonComponent}
-            {$backUrlComponent}
-        </div>
-        <style>
-            #{$id} {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                right: 0;
-                z-index: 999999;
-            }
-            @media print { #{$id} { display: none; } }
-        </style>
-
-        EOT;
-    }
-
     public function get(): string
     {
         $css = '';
@@ -242,7 +167,7 @@ class CtrlP
 
         $html = str_replace(
             '@CtrlP',
-            $this->controlComponents()."<style>\n{$css}</style>\n<script>\n{$script}</script>",
+            $this->controlComponents."<style>\n{$css}</style>\n<script>\n{$script}</script>",
             $html
         );
 
