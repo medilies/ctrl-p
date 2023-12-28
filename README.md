@@ -65,7 +65,6 @@ echo CtrlP::html('
     </main>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    @CtrlP
 </body>
 </html>
     ')

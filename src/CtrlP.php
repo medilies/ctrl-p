@@ -319,7 +319,7 @@ class CtrlP
 
     public function toString(): string
     {
-        if(strpos($this->html, static::TOKEN)) {
+        if (strpos($this->html, static::TOKEN)) {
             return str_replace(
                 static::TOKEN,
                 $this->compileControlComponents().$this->compileCss().$this->compileJs(),
