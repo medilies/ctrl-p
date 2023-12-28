@@ -5,7 +5,6 @@ namespace Medilies\CtrlP;
 use RowBloom\RowBloom\Renderers\Sizing\BoxArea;
 use RowBloom\RowBloom\Renderers\Sizing\BoxSize;
 use RowBloom\RowBloom\Renderers\Sizing\Length;
-use RowBloom\RowBloom\Renderers\Sizing\PageSizeResolver;
 use RowBloom\RowBloom\Renderers\Sizing\PaperFormat;
 use Stringable;
 
@@ -20,6 +19,8 @@ class AtPage implements Stringable
     public bool $landscape = false;
 
     public string $pageSelectorList = '';
+
+    protected bool $sizeIfFormat;
 
     public static function new(): static
     {
@@ -50,6 +51,8 @@ class AtPage implements Stringable
             $format :
             PaperFormat::from($format);
 
+        $this->sizeIfFormat = true;
+
         return $this;
     }
 
@@ -57,6 +60,8 @@ class AtPage implements Stringable
     public function paperSize(Length|string $width, Length|string $height): static
     {
         $this->size = new BoxSize($width, $height);
+
+        $this->sizeIfFormat = false;
 
         return $this;
     }
@@ -106,11 +111,7 @@ class AtPage implements Stringable
         // <pseudo-page> = ':' [ left | right | first | blank ]
         // examples: https://www.w3.org/TR/css-page-3/#example-691ff5b9
 
-        $resolvedSize = PageSizeResolver::resolve(
-            $this->format,
-            $this->size,
-            landscape: $this->landscape,
-        );
+        $resolvedSize = $this->resolveSize();
 
         $size = "size: {$resolvedSize->width} {$resolvedSize->height}; ";
 
@@ -125,5 +126,16 @@ class AtPage implements Stringable
         $declarationRuleList = $size.$margin;
 
         return '@page '.$this->pageSelectorList.'{ '.$declarationRuleList.'}'."\n";
+    }
+
+    protected function resolveSize(): BoxSize
+    {
+        if (! $this->sizeIfFormat) {
+            return $this->size;
+        }
+
+        $size = $this->format->size();
+
+        return $this->landscape ? $size->toLandscape() : $size->toPortrait();
     }
 }

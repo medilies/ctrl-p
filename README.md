@@ -21,7 +21,7 @@ composer require medilies/ctrl-p
 ### Set page size and orientation
 
 - Use `format($paperFormat)` to set a standard paper format.
-- Use `landscape()` or `portrait()` to direct the chosen page format.
+- Use `landscape()` or `portrait()` to direct the chosen paper format.
 - Use `paperSize($width, $height)` to set an explicit size.
 
 ### Margin
