@@ -1,17 +1,12 @@
 <?php
 
 use Medilies\CtrlP\AtPage;
-use RowBloom\RowBloom\Renderers\Sizing\Length;
 
 test('compilePageCss full assertion')
     ->expect(
         AtPage::new()
             ->margins('1cm 2cm 3cm 4cm')
-            ->paperSize(
-                null,
-                Length::fromDimension('210mm'),
-                Length::fromDimension('297mm')
-            ) // A4
+            ->paperSize('210mm', '297mm') // A4
             ->toString()
     )
     ->toBeString()

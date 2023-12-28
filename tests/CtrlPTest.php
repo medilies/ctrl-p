@@ -7,7 +7,6 @@ use RowBloom\RowBloom\Renderers\Sizing\Length;
 test('proxy to AtPage')
     ->expect(CtrlP::html('@CtrlP')->margins('1cm 2cm 3cm 4cm')
         ->paperSize(
-            null,
             Length::fromDimension('210mm'),
             Length::fromDimension('297mm')
         ) // A4
@@ -19,11 +18,7 @@ test('atPageRule() with callable')
     ->expect(
         CtrlP::html('@CtrlP')->atPageRule('x', function (AtPage $atPage) {
             $atPage->margins('1cm 2cm 3cm 4cm')
-                ->paperSize(
-                    null,
-                    Length::fromDimension('210mm'),
-                    Length::fromDimension('297mm')
-                );
+                ->paperSize('210mm', '297mm');
         })->get()
     )
     ->toBeString()
@@ -34,7 +29,6 @@ test('atPageRule() with instanceof AtPage')
         CtrlP::html('@CtrlP')
             ->atPageRule('x', AtPage::new()->margins('1cm 2cm 3cm 4cm')
                 ->paperSize(
-                    null,
                     Length::fromDimension('210mm'),
                     Length::fromDimension('297mm')
                 )

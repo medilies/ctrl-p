@@ -54,9 +54,9 @@ class AtPage implements Stringable
     }
 
     // ! size under 10cm X 10cm causes ignoring all rules
-    public function paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null): static
+    public function paperSize(Length|string $width, Length|string $height): static
     {
-        $this->size = PageSizeResolver::resolve(null, $size, $width, $height);
+        $this->size = new BoxSize($width, $height);
 
         return $this;
     }

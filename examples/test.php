@@ -3,11 +3,10 @@
 // * php -S 0.0.0.0:8080 .\test.php
 
 use Medilies\CtrlP\CtrlP;
-use RowBloom\RowBloom\Renderers\Sizing\Length;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$html = CtrlP::html('
+echo CtrlP::html('
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,17 +23,10 @@ $html = CtrlP::html('
 </html>
     ')
     ->margins('2in')
-    ->paperSize(
-        null,
-        Length::fromDimension('130mm'),
-        Length::fromDimension('130mm')
-    )
+    ->paperSize('130mm', '130mm')
     ->title('yoyo')
     ->urlPath('/yoyo')
     ->autoPrint()
     ->printButton()
     ->backUrl('/')
     ->get();
-?>
-
-<?= $html ?>
