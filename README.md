@@ -8,17 +8,39 @@ composer require medilies/ctrl-p
 
 ## Usage
 
-- Instantiate `CtrlP` and provide and an HTML or PHP template.
-- The template should contain this string `@CtrlP` to indicate where to inject the package code.
-- Visit the rendered page on the browser.
-- Print or save the PDF.
+### Set the HTML
+
+- Use `CtrlP::html('foo')` or `$ctrlP->setHtml('foo')` to set the HTML.
+- Use `CtrlP::template('<?php echo "foo";', [])` or `$ctrlP->template('<?php echo "foo";', [])` to set the HTML from a PHP template.
+
+> The template must contain `@CtrlP` string to indicate where to inject the package code.
+
+### Set page size and orientation
+
+- Use `format($paperFormat)` to set a standard paper format.
+- Use `landscape()` or `portrait()` to direct the chosen page format.
+- Use `paperSize($width, $height)` to set an explicit size.
+
+### Margin
+
+Use `margins($margins)` to set the margins.
+
+### Control button
+
+- Use `printButton($bool)` to add/remove a print button.
+- Use `backUrl($url)` to add/remove a button with a link to a page of your choice.
+
+### Overrides
+
+- Use `title($title)` to override the title.
+- Use `urlPath($url)` to override the url path.
 
 ## Example
 
 ```php
 <?php
 
-// * php -S 0.0.0.0:8080 .\this_file.php
+// php -S 0.0.0.0:8080 .\this_file.php
 // Visit http://127.0.0.1:8080/
 
 use Medilies\CtrlP\CtrlP;
