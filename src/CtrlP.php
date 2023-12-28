@@ -45,8 +45,28 @@ class CtrlP
         return (new static)->setHtml($html);
     }
 
+    /**
+     * Be careful to not pass user given templates here.
+     */
+    public static function php(string $template, array $data): static
+    {
+        $html = (function (string $template, array $data) {
+            ob_start();
+
+            extract($data);
+            eval(' ?>'.$template.'<?php ');
+
+            return ob_get_clean();
+        })($template, $data);
+
+        if ($html === false) {
+            throw new Exception("Couldn't render the given PHP template.");
+        }
+
+        return static::html($html);
+    }
+
     // TODO: ::url('https://example.com')
-    // TODO: ::php()
 
     final public function __construct()
     {
