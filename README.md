@@ -30,10 +30,11 @@ composer require medilies/ctrl-p
 
 Use `margins($margins)` to set the margins.
 
-### Control button
+### Control
 
 - Use `printButton($bool)` to add/remove a print button.
 - Use `backUrl($url)` to add/remove a button with a link to a page of your choice.
+- Use `autoPrint()` to automatically print the page after rendering it.
 
 ### Overrides
 
