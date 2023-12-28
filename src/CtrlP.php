@@ -19,7 +19,7 @@ use Exception;
  * @method static landscape(bool $set = true)
  * @method static portrait(bool $set = true)
  * @method static format(PaperFormat|string $format)
- * @method static paperSize(?BoxSize $size = null, ?Length $width = null, ?Length $height = null)
+ * @method static paperSize(Length|string $width = null, Length|string $height = null)
  * @method static margins(BoxArea|array|string $margin)
  * @method static pageSelectorList(string $pageSelectorList)
  */

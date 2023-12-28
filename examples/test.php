@@ -14,7 +14,7 @@ echo CtrlP::html('
 </head>
 <body>
     <main class="bg-gray-300">
-        yoo
+        Let the browser do it
     </main>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,9 +24,9 @@ echo CtrlP::html('
     ')
     ->margins('2in')
     ->paperSize('130mm', '130mm')
-    ->title('yoyo')
-    ->urlPath('/yoyo')
+    ->title('Chad PDF')
+    ->urlPath('/drip-url')
     ->autoPrint()
     ->printButton()
-    ->backUrl('/')
+    ->backUrl('/some-path')
     ->get();
