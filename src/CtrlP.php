@@ -25,6 +25,8 @@ use Exception;
  */
 class CtrlP
 {
+    protected const TOKEN = '@CtrlP';
+
     /** @var array<string, AtPage> */
     protected array $atPageRules = [];
 
@@ -46,9 +48,30 @@ class CtrlP
     }
 
     /**
-     * Be careful to not pass user given templates here.
+     * Be careful to not pass user given PHP code here.
      */
-    public static function php(string $template, array $data): static
+    public static function template(string $template, array $data = []): static
+    {
+        return (new static)->setTemplate($template, $data);
+    }
+
+    // TODO: ::url('https://example.com')
+
+    final public function __construct()
+    {
+    }
+
+    public function setHtml(string $html): static
+    {
+        $this->html = $html;
+
+        return $this;
+    }
+
+    /**
+     * Be careful to not pass user given PHP code here.
+     */
+    public function setTemplate(string $template, array $data = []): static
     {
         $html = (function (string $template, array $data) {
             ob_start();
@@ -63,20 +86,7 @@ class CtrlP
             throw new Exception("Couldn't render the given PHP template.");
         }
 
-        return static::html($html);
-    }
-
-    // TODO: ::url('https://example.com')
-
-    final public function __construct()
-    {
-    }
-
-    public function setHtml(string $html): static
-    {
-        $this->html = $html;
-
-        return $this;
+        return $this->setHtml($html);
     }
 
     public function autoPrint(bool $autoPrint = true): static
@@ -252,6 +262,25 @@ class CtrlP
     }
 
     // ========================================================================
+    // CSS
+    // ========================================================================
+
+    protected function compileCss(): string
+    {
+        $css = '';
+
+        foreach ($this->atPageRules as $atRule) {
+            $css .= $atRule->toString();
+        }
+
+        if ($css === '') {
+            return '';
+        }
+
+        return "<style>\n{$css}</style>\n";
+    }
+
+    // ========================================================================
     // JS
     // ========================================================================
 
@@ -272,7 +301,11 @@ class CtrlP
             $js .= "window.print();\n";
         }
 
-        return $js;
+        if ($js === '') {
+            return '';
+        }
+
+        return "<script>\n{$js}</script>";
     }
 
     // ========================================================================
@@ -286,22 +319,10 @@ class CtrlP
 
     public function toString(): string
     {
-        $css = '';
-
-        foreach ($this->atPageRules as $atRule) {
-            $css .= $atRule->toString();
-        }
-
-        $script = $this->compileJs();
-
-        $html = $this->html;
-
-        $html = str_replace(
-            '@CtrlP',
-            $this->compileControlComponents()."<style>\n{$css}</style>\n<script>\n{$script}</script>",
-            $html
+        return str_replace(
+            static::TOKEN,
+            $this->compileControlComponents().$this->compileCss().$this->compileJs(),
+            $this->html
         );
-
-        return $html;
     }
 }

@@ -37,3 +37,7 @@ test('atPageRule() with instanceof AtPage')
     )
     ->toBeString()
     ->toContain('@page');
+
+test('Render template')
+    ->expect(CtrlP::template('<?= $foo ?>', ['foo' => 1])->get())
+    ->toBe('1');
