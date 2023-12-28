@@ -39,5 +39,5 @@ test('atPageRule() with instanceof AtPage')
     ->toContain('@page');
 
 test('Render template')
-    ->expect(CtrlP::template('<?= $foo ?>', ['foo' => 1])->get())
+    ->expect(CtrlP::template('<?= $foo ?>', ['foo' => 1])->autoPrint(false)->get())
     ->toBe('1');
