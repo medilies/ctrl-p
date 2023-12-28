@@ -28,6 +28,8 @@ composer require medilies/ctrl-p
 
 Use `margins($margins)` to set the margins.
 
+> Margins (header and footer) content cannot be be edited as of december 2023 because no browser supports it ([see](https://stackoverflow.com/a/77632288/17873304))
+
 ### Control
 
 - Use `printButton($bool)` to add/remove a print button.
