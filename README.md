@@ -18,8 +18,6 @@ composer require medilies/ctrl-p
 - Use `CtrlP::html('foo')` or `$ctrlP->setHtml('foo')` to set the HTML.
 - Use `CtrlP::template('<?php echo "foo";', [])` or `$ctrlP->template('<?php echo "foo";', [])` to set the HTML from a PHP template.
 
-> The template must contain `@CtrlP` string to indicate where to inject the package code.
-
 ### Set page size and orientation
 
 - Use `format($paperFormat)` to set a standard paper format.

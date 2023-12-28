@@ -319,10 +319,15 @@ class CtrlP
 
     public function toString(): string
     {
-        return str_replace(
-            static::TOKEN,
-            $this->compileControlComponents().$this->compileCss().$this->compileJs(),
-            $this->html
-        );
+        if(strpos($this->html, static::TOKEN)) {
+            return str_replace(
+                static::TOKEN,
+                $this->compileControlComponents().$this->compileCss().$this->compileJs(),
+                $this->html
+            );
+        }
+
+        return $this->html.
+            $this->compileControlComponents().$this->compileCss().$this->compileJs();
     }
 }
