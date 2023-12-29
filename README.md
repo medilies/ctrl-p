@@ -55,25 +55,75 @@ Use `margins($margins)` to set the margins.
 
 use Medilies\CtrlP\CtrlP;
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 echo CtrlP::html('
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <title>Flex and Grid HTML Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      background-color: #f2f2f2;
+      width: 250px;
+      padding: 20px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      background-color: #e0e0e0;
+    }
+
+    .box {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <main class="bg-gray-300">
-        Let the browser do it
-    </main>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  <div class="container">
+    <div class="sidebar">
+      <h2>Sidebar</h2>
+      <p>Some sidebar content goes here.</p>
+    </div>
+
+    <div class="main-content">
+      <div class="box">Box 1</div>
+      <div class="box">Box 2</div>
+      <div class="box">Box 3</div>
+      <div class="box">Box 4</div>
+      <div class="box">Box 5</div>
+      <div class="box">Box 6</div>
+    </div>
+  </div>
+
 </body>
 </html>
     ')
-    ->margins('2in')
-    ->paperSize('130mm', '130mm')
+    ->margins('1cm')
+    // ->paperSize('130mm', '130mm')
+    ->format('A4')
+    ->landscape()
     ->title('Chad PDF')
     ->urlPath('/drip-url')
     ->autoPrint()
