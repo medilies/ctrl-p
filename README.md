@@ -1,8 +1,8 @@
 # Ctrl P
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/medilies/ctrl-p.svg?style=flat-square)](https://packagist.org/packages/medilies/ctrl-p)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/medilies/ctrl-p/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/medilies/ctrl-p/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/medilies/ctrl-p/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/medilies/ctrl-p/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![Pest Action](https://img.shields.io/github/actions/workflow/status/medilies/ctrl-p/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/medilies/ctrl-p/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Pint action](https://img.shields.io/github/actions/workflow/status/medilies/ctrl-p/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/medilies/ctrl-p/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/medilies/ctrl-p.svg?style=flat-square)](https://packagist.org/packages/medilies/ctrl-p)
 
 ## Setup
@@ -10,6 +10,10 @@
 ```bash
 composer require medilies/ctrl-p
 ```
+
+## Requirements
+
+- PHP 8.1
 
 ## Usage
 
