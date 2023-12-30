@@ -20,7 +20,7 @@ class AtPage implements Stringable
 
     public string $pageSelectorList = '';
 
-    protected bool $sizeIfFormat;
+    protected bool $sizeIsFormat;
 
     public static function new(): static
     {
@@ -51,7 +51,7 @@ class AtPage implements Stringable
             $format :
             PaperFormat::from($format);
 
-        $this->sizeIfFormat = true;
+        $this->sizeIsFormat = true;
 
         return $this;
     }
@@ -61,7 +61,7 @@ class AtPage implements Stringable
     {
         $this->size = new BoxSize($width, $height);
 
-        $this->sizeIfFormat = false;
+        $this->sizeIsFormat = false;
 
         return $this;
     }
@@ -130,7 +130,7 @@ class AtPage implements Stringable
 
     protected function resolveSize(): BoxSize
     {
-        if (! $this->sizeIfFormat) {
+        if (! $this->sizeIsFormat) {
             return $this->size;
         }
 
