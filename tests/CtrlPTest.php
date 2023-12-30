@@ -2,7 +2,7 @@
 
 use Medilies\CtrlP\AtPage;
 use Medilies\CtrlP\CtrlP;
-use RowBloom\RowBloom\Renderers\Sizing\Length;
+use RowBloom\CssSizing\Length;
 
 test('proxy to AtPage')
     ->expect(CtrlP::html('@CtrlP')->margins('1cm 2cm 3cm 4cm')

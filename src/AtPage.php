@@ -2,10 +2,10 @@
 
 namespace Medilies\CtrlP;
 
-use RowBloom\RowBloom\Renderers\Sizing\BoxArea;
-use RowBloom\RowBloom\Renderers\Sizing\BoxSize;
-use RowBloom\RowBloom\Renderers\Sizing\Length;
-use RowBloom\RowBloom\Renderers\Sizing\PaperFormat;
+use RowBloom\CssSizing\BoxArea;
+use RowBloom\CssSizing\BoxSize;
+use RowBloom\CssSizing\Length;
+use RowBloom\CssSizing\PaperFormat;
 use Stringable;
 
 class AtPage implements Stringable
